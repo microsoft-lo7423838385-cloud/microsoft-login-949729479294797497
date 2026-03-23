@@ -1,7 +1,6 @@
 body {
     margin: 0;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    /* Real Microsoft Fluent Background link */
+    font-family: 'Segoe UI', SegoeUI, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background-image: url('https://aadcdn.msauth.net/shared/1.0/content/images/backgrounds/2_bc3d32a696895f78c19df6c717586a5d.jpg');
     background-size: cover;
     background-position: center;
@@ -11,41 +10,38 @@ body {
     height: 100vh;
 }
 
-.main-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.outer-container {
     width: 100%;
     max-width: 440px;
+    display: flex;
+    flex-direction: column;
 }
 
 .login-card {
     background: white;
     padding: 44px;
-    width: 100%;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    box-sizing: border-box;
-    text-align: left;
 }
 
-.logo {
+.ms-logo {
     width: 108px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 h1 {
     font-size: 24px;
     font-weight: 600;
     margin: 0 0 16px 0;
+    color: #1b1b1b;
 }
 
 .input-field {
     width: 100%;
-    padding: 8px 0;
     border: none;
     border-bottom: 1px solid #666;
+    padding: 8px 0;
     font-size: 16px;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     outline: none;
 }
 
@@ -53,23 +49,27 @@ h1 {
     border-bottom: 2px solid #0067b8;
 }
 
-.account-help {
+.help-text {
     font-size: 13px;
-    margin: 10px 0;
+    margin: 12px 0;
 }
 
-.account-help a {
+.help-text a {
     color: #0067b8;
     text-decoration: none;
 }
 
-.button-group {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 30px;
+.help-text a:hover {
+    text-decoration: underline;
 }
 
-.btn-primary {
+.button-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 28px;
+}
+
+.btn-next {
     background: #0067b8;
     color: white;
     border: none;
@@ -78,27 +78,32 @@ h1 {
     cursor: pointer;
 }
 
-/* Sign-in options box */
-.options-card {
+/* THE LOWER OPTIONS BOX */
+.options-box {
     background: white;
-    margin-top: 25px;
-    padding: 10px 20px;
-    width: 100%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-top: 28px;
+    padding: 12px 44px; /* Matches card padding */
     display: flex;
     align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     cursor: pointer;
-    box-sizing: border-box;
 }
 
 .key-icon {
-    width: 20px;
+    width: 24px;
     margin-right: 12px;
-    filter: opacity(0.6);
+    opacity: 0.6;
 }
 
-.options-card span {
+.options-box span {
     font-size: 15px;
+    color: #1b1b1b;
+}
+
+.back-nav {
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 12px;
 }
 
 .footer {
@@ -106,18 +111,10 @@ h1 {
     bottom: 20px;
     right: 30px;
     font-size: 12px;
-    color: #1b1b1b;
 }
 
 .footer a {
-    margin-right: 20px;
+    margin-left: 24px;
     text-decoration: none;
-    color: #1b1b1b;
-}
-
-.back-link {
-    font-size: 14px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    color: #666;
+    color: #000;
 }
