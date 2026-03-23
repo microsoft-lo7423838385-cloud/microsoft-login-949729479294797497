@@ -4,23 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign in to your account</title>
-    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" type="image/x-icon">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="login-wrapper">
+    <div class="main-container">
         <div class="login-card">
-            
             <div id="email-section">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" class="logo">
-                
-                <h1 id="title">Sign in</h1>
+                <h1>Sign in</h1>
                 <input type="email" id="user-email" placeholder="Email or phone" class="input-field">
-                
-                <div class="support-links">
-                    <p class="account-help"><a href="#">Can't access your account?</a></p>
-                </div>
-                
+                <p class="account-help"><a href="#">Can't access your account?</a></p>
                 <div class="button-group">
                     <button class="btn-primary" onclick="showPassword()">Next</button>
                 </div>
@@ -29,50 +22,41 @@
             <div id="password-section" style="display: none;">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" class="logo">
                 <div class="back-link" onclick="showEmail()">← <span id="display-email"></span></div>
-                
                 <h1>Enter password</h1>
                 <input type="password" id="user-password" placeholder="Password" class="input-field">
-                
-                <div class="support-links">
-                    <p class="account-help"><a href="#">Forgot password?</a></p>
-                </div>
-                
+                <p class="account-help"><a href="#">Forgot password?</a></p>
                 <div class="button-group">
                     <button class="btn-primary" onclick="finishLogin()">Sign in</button>
                 </div>
             </div>
         </div>
 
-        <div class="login-footer">
+        <div class="options-card">
+            <img src="https://img.icons8.com/ios/50/000000/key.png" class="key-icon">
+            <span>Sign-in options</span>
+        </div>
+
+        <div class="footer">
             <a href="#">Terms of use</a>
             <a href="#">Privacy & cookies</a>
-            <span class="ellipsis">...</span>
+            <span>...</span>
         </div>
     </div>
 
     <script>
         function showPassword() {
-            const emailInput = document.getElementById('user-email');
-            if(emailInput.value === "") { 
-                emailInput.style.borderBottomColor = "#d24e18"; // Highlight error
-                return; 
-            }
-            emailInput.style.borderBottomColor = "#666"; // Reset border
-
+            const email = document.getElementById('user-email').value;
+            if(!email) return;
             document.getElementById('email-section').style.display = 'none';
             document.getElementById('password-section').style.display = 'block';
-            document.getElementById('display-email').innerText = emailInput.value;
+            document.getElementById('display-email').innerText = email;
         }
-
         function showEmail() {
             document.getElementById('password-section').style.display = 'none';
             document.getElementById('email-section').style.display = 'block';
         }
-
         function finishLogin() {
-            alert("Demo Complete. Login sequence simulated successfully.");
-            // OPTIONAL: Redirect after login
-            // window.location.href = "https://yourportfolio.com";
+            alert("Success! You've built a perfect clone.");
         }
     </script>
 </body>
